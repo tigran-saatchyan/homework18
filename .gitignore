@@ -5,3 +5,7 @@ views/__pycache__
 .DS_Store
 __pycache__
 /venv/
+/logs/dao/dao.log
+/logs/services/services.log
+/logs/views/views.log
+/logs/main.log

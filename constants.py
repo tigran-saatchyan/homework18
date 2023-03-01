@@ -1,4 +1,7 @@
+import os
+from pathlib import Path
 
 CONSTANT_NAME = "value"
-LOG_DIR = "logs"
+THIS_FOLDER = Path(__file__).parent.resolve()
+LOG_DIR = os.path.join(THIS_FOLDER, "logs")
 SQLITE_DB_NAME = 'sqlite:///movies.db'

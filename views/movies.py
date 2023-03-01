@@ -3,6 +3,7 @@ from flask_restx import Api, Namespace, Resource, reqparse
 
 from dao.model.movies import MoviesSchema
 from implemented import movies_service
+from log_handler import views_logger
 
 movies_ns = Namespace('movies')
 
@@ -37,6 +38,7 @@ class MoviesView(Resource):
     @movies_ns.response(200, 'Success')
     @movies_ns.response(400, 'Bad Request')
     def get(self):
+        views_logger.info(f'Request received: {request.method} {request.url}')
         params = ['year', 'director_id', 'genre_id']
         errors = {
             param: f"{param.title()} must be a digital value" for param
@@ -47,6 +49,7 @@ class MoviesView(Resource):
         }
 
         if errors:
+            views_logger.warning(f'Invalid request parameters: {errors}')
             return errors, 400
 
         year, director_id, genre_id = (
@@ -55,12 +58,16 @@ class MoviesView(Resource):
         )
 
         movies = movies_service.get_all_movies(year, director_id, genre_id)
-        return movies_schema.dump(movies), 200
+        response = movies_schema.dump(movies)
+        views_logger.info(f'Response sent: {response}')
+        return response, 200
 
     @staticmethod
     def post():
+        views_logger.info(f'Request received: {request.method} {request.url}')
         movie = request.json
         movies_service.post_movie(movie)
+        views_logger.info(f'Response sent: Success')
         return "", 201
 
 
@@ -68,19 +75,29 @@ class MoviesView(Resource):
 class MovieView(Resource):
     @staticmethod
     def get(mid):
+        views_logger.info(f'Request received: {request.method} {request.url}')
         movie = movies_service.get_one_movie(mid)
-        return movie_schema.dump(movie), 200
+        response = movie_schema.dump(movie)
+        views_logger.info(f'Response sent: {response}')
+        return response, 200
 
     @staticmethod
     @movies_ns.response(204, 'No Content')
     def put(mid):
+        views_logger.info(f'Request received: {request.method} {request.url}')
         movie = request.json
         result = movies_service.update_movie(mid, movie)
         if result:
+            views_logger.info(f'Response sent: Success')
             return "Success", 200
+        views_logger.warning(
+            f'Response sent: must contain all required fields'
+            )
         return {"error": "must contain all required fields"}, 204
 
     @staticmethod
     def delete(mid):
+        views_logger.info(f'Request received: {request.method} {request.url}')
         movies_service.delete_movie(mid)
+        views_logger.info(f'Response sent: No Content')
         return "", 204
