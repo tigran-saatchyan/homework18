@@ -1,3 +1,5 @@
+"""Implementation module"""
+
 from dao.directors import DirectorsDAO
 from dao.genres import GenresDAO
 from dao.movies import MoviesDAO

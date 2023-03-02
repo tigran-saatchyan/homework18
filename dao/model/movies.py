@@ -1,4 +1,5 @@
-# здесь модель SQLAlchemy для сущности, также могут быть дополнительные методы работы с моделью (но не с базой, с базой мы работает в классе DAO)
+"""Movies model and schema module"""
+
 from marshmallow import Schema, fields
 from sqlalchemy.orm import relationship
 
@@ -8,6 +9,9 @@ from setup_db import db
 
 
 class Movies(db.Model):
+    """
+    Movies model
+    """
     __tablename__ = 'movies'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String)
@@ -26,6 +30,9 @@ class Movies(db.Model):
 
 
 class MoviesSchema(Schema):
+    """
+    Movies schema
+    """
     id = fields.Int()
     title = fields.Str()
     description = fields.Str()
